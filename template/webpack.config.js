@@ -1,5 +1,6 @@
 var path = require('path')
 var webpack = require('webpack')
+var merge = require('webpack-merge')
 
 var config = {
   entry: './src/main.js',
