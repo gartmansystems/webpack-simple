@@ -15,6 +15,9 @@ var config = {
       'public': path.resolve(__dirname, './public')
     }
   },
+  externals: {
+    Vuetify: 'Vuetify',
+  },
   module: {
     rules: [
       {
@@ -68,25 +71,6 @@ var config = {
 if (process.env.NODE_ENV === 'production') {
   module.exports = [
     // http://vue-loader.vuejs.org/en/workflow/production.html
-    devtool = '#source-map',
-    plugins = (module.exports.plugins || []).concat([
-      new webpack.DefinePlugin({
-        'process.env': {
-          NODE_ENV: '"production"'
-        }
-      }),
-      new webpack.optimize.UglifyJsPlugin({
-        sourceMap: false,
-        minimize: true,
-        mangle: true,
-        compress: {
-          warnings: false
-        }
-      }),
-      new webpack.LoaderOptionsPlugin({
-        minimize: true
-      })
-    ]),
     merge(config, {
       entry: './src/plugin.js',
       output: {
@@ -104,8 +88,26 @@ if (process.env.NODE_ENV === 'production') {
         umdNamedDefine: true
       },
     }),
-  ]
-
+  ];
+  module.exports.devtool = '#source-map',
+  module.exports.plugins = (module.exports.plugins || []).concat([
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: '"production"'
+      }
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      sourceMap: false,
+      minimize: true,
+      mangle: true,
+      compress: {
+        warnings: false
+      }
+    }),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true
+    })
+  ]);
 } else {
   module.exports = config;
 }

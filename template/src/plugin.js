@@ -1,4 +1,4 @@
-import { App } from 'App.vue';
+import App from './App.vue';
 
 module.exports = {
   install: function (Vue, options) {
