@@ -1,7 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
 
-module.exports = {
+var config = {
   entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, './dist'),
@@ -66,22 +66,46 @@ module.exports = {
 }
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports.devtool = '#source-map'
-  // http://vue-loader.vuejs.org/en/workflow/production.html
-  module.exports.plugins = (module.exports.plugins || []).concat([
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: '"production"'
+  module.exports = [
+    // http://vue-loader.vuejs.org/en/workflow/production.html
+    devtool = '#source-map',
+    plugins = (module.exports.plugins || []).concat([
+      new webpack.DefinePlugin({
+        'process.env': {
+          NODE_ENV: '"production"'
+        }
+      }),
+      new webpack.optimize.UglifyJsPlugin({
+        sourceMap: false,
+        minimize: true,
+        mangle: true,
+        compress: {
+          warnings: false
+        }
+      }),
+      new webpack.LoaderOptionsPlugin({
+        minimize: true
+      })
+    ]),
+    merge(config, {
+      entry: './src/plugin.js',
+      output: {
+        filename: 'gartman-app.min.js',
+        libraryTarget: 'window',
+        library: 'GartmanApp'
       }
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-      compress: {
-        warnings: false
-      }
+    merge(config, {
+      entry: './src/App.vue',
+      output: {
+        filename: 'gartman-app.js',
+        libraryTarget: 'umd',
+        library: 'gartman-app',
+        umdNamedDefine: true
+      },
     }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
-    })
-  ])
+  ]
+
+} else {
+  module.exports = config;
 }
